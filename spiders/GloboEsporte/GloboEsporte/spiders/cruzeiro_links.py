@@ -4,8 +4,15 @@ import scrapy
 
 class CruzeiroLinksSpider(scrapy.Spider):
     name = 'cruzeiro_links'
-    allowed_domains = ['https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-1.ghtml']
-    start_urls = ['http://https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-1.ghtml/']
-
+    start_urls = ['http://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-1.ghtml/']
+    links = []
+    counter = 1
     def parse(self, response):
-        pass
+        dlinks = response.xpath('.//a[contains(@class, "feed-post-link")]/@href').extract()
+        for l in dlinks:
+            self.links.append(l)
+        self.counter+=1
+        yield scrapy.Request(
+            url='http://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-%i.ghtml/' % self.counter,
+            callback=self.parse
+        )
