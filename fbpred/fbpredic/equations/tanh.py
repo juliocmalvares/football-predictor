@@ -6,4 +6,3 @@ def Tanh(number):
         return np.tanh(number)
     else:
         raise ValueError("Number need to be Integer or a Float")
-    
