@@ -25,6 +25,7 @@ class CruzeiroLinksSpider(scrapy.Spider):
 		if self.first_time:
 			self.populate()
 			self.first_time = False
+			
 		dlinks = response.xpath('.//a[contains(@class, "feed-post-link")]/@href').extract()
 		for l in dlinks:
 			self.links.append(l)
