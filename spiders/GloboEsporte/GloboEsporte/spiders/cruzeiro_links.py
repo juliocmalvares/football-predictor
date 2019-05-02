@@ -9,6 +9,7 @@ class CruzeiroLinksSpider(scrapy.Spider):
 	counter = 1
 	arch = 'cruzeiro_links.csv'
 	links_available = []
+	first_time = True
 
 	def populate(self):
 		try:
@@ -21,7 +22,9 @@ class CruzeiroLinksSpider(scrapy.Spider):
 		
 
 	def parse(self, response):
-		self.populate()
+		if self.first_time:
+			self.populate()
+			self.first_time = False
 		dlinks = response.xpath('.//a[contains(@class, "feed-post-link")]/@href').extract()
 		for l in dlinks:
 			self.links.append(l)
