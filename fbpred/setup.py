@@ -7,10 +7,10 @@ if __name__ == '__main__':
 	setup(	name = 'fbpred',
 		version = '1.0.0',
 		author = 'Júlio Álvares',
-		author_email = 'juliocmalvares07@gmail.comm',
+		author_email = 'juliocmalvares07@gmail.com',
 		license ='MIT',
 		keywords = 'football prediction analysis',
 		packages = ['fbpred',
-			    'fbpred.equations'],
-		install_requires = ['numpy']
+			    'fbpred.classifiers'],
+		install_requires = ['numpy', 'scrapy', 'pandas']
 	)

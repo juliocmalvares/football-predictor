@@ -7,20 +7,20 @@ class CruzeiroLinksSpider(scrapy.Spider):
 	start_urls = ['https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-1.ghtml']
 	links = []
 	counter = 1
-	arch = 'cruzeiro_links.csv'
+	file = 'cruzeiro_links.csv'
 	links_available = []
 	first_time = True
 
 	def populate(self):
 		try:
-			purelinks = open(self.arch, 'r').read().split(',\n')
+			purelinks = open(self.file, 'r').read().split(',\n')
 		except:
 			return
 		for link in purelinks:
 			if link not in self.links_available:
 				self.links_available.append(hashlib.sha1(bytes(link, 'utf-8')).hexdigest())
 		
-
+#globoesporte.globo.com/futebol/times
 	def parse(self, response):
 		if self.first_time:
 			self.populate()
@@ -32,7 +32,7 @@ class CruzeiroLinksSpider(scrapy.Spider):
 		print(" >>> Counter:", self.counter)
 
 		if self.counter % 10 == 0:
-			fl = open(self.arch, 'a+')
+			fl = open(self.file, 'a+')
 			for link in self.links:
 				if hashlib.sha1(bytes(link, 'utf-8')).hexdigest() not in self.links_available:
 					fl.write(link + ',\n')
@@ -45,3 +45,14 @@ class CruzeiroLinksSpider(scrapy.Spider):
 			url='https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-%i.ghtml' % self.counter,
 			callback=self.parse
 		)
+
+
+#response.xpath('.//a[contains(@class, "header-editoria--link")]/text()').extract_first() Time
+#response.xpath('//div[contains(@class, "title")]/a/text()').extract_first() Time modo 2
+
+
+# response.xpath('//div[contains(@class, "title")]/meta/@content').extract() Titulo e subtitulo
+
+#response.xpath('//p[contains(@class, "content-publication-data__from")]/@title').extract()   Autor
+
+#response.xpath('//p[contains(@class, "content-text__container")]/text()').extract() Texto
