@@ -11,6 +11,6 @@ if __name__ == '__main__':
 		license ='MIT',
 		keywords = 'football prediction analysis',
 		packages = ['fbpred',
-			    'fbpred.classifiers'],
-		install_requires = ['numpy', 'scrapy', 'pandas']
+			    'fbpred.classifiers', 'fbpred.database', 'fbpred.fbpredic', 'fbpred.filters', 'fbpred.classifiers.equations', 'fbpred.io'],
+		install_requires = ['numpy', 'scrapy', 'pandas', 'joblib']
 	)
