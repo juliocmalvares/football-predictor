@@ -12,5 +12,5 @@ if __name__ == '__main__':
 		keywords = 'football prediction analysis',
 		packages = ['fbpred',
 			    'fbpred.classifiers', 'fbpred.database', 'fbpred.fbpredic', 'fbpred.filters', 'fbpred.classifiers.equations', 'fbpred.io'],
-		install_requires = ['numpy', 'scrapy', 'pandas', 'joblib']
+		install_requires = ['numpy', 'scrapy', 'pandas', 'joblib', 'csv', 'json', 'os']
 	)
