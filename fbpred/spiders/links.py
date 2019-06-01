@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import hashlib
+import scrapy
+import hashlib
 
-class CruzeiroLinksSpider(scrapy.Spider):
-	name = 'cruzeiro_links'
-	start_urls = ['https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-1.ghtml']
+class Links(scrapy.Spider):
+	name = 'links'
+	time = '' # -a time='time' para passar o parâmetro
+	start_urls = ['https://globoesporte.globo.com/futebol/times/{}/index/feed/pagina-1.ghtml'.format(time)]
 	links = []
 	counter = 1
 	file = 'cruzeiro_links.csv'
 	links_available = []
 	first_time = True
+	base_link = 'https://globoesporte.globo.com/futebol/times/%s' % time
 
 	def populate(self):
 		try:
@@ -20,8 +24,9 @@ class CruzeiroLinksSpider(scrapy.Spider):
 			if link not in self.links_available:
 				self.links_available.append(hashlib.sha1(bytes(link, 'utf-8')).hexdigest())
 		
-#globoesporte.globo.com/futebol/times
+#globoesporte.globo.com/futebol/times/time
 	def parse(self, response):
+
 		if self.first_time:
 			self.populate()
 			self.first_time = False			
@@ -29,15 +34,14 @@ class CruzeiroLinksSpider(scrapy.Spider):
 		for l in dlinks:
 			self.links.append(l)
 		self.counter+=1
-		print(" >>> Counter:", self.counter)
+		# print(" >>> Counter:", self.counter)
 		if self.counter % 10 == 0:
 			fl = open(self.file, 'a+')
 			for link in self.links:
-				if hashlib.sha1(bytes(link, 'utf-8')).hexdigest() not in self.links_available:
+				if (hashlib.sha1(bytes(link, 'utf-8')).hexdigest() not in self.links_available) and (self.base_link in link):
+					print(">>>",link, "\n>>>", self.base_link)
 					fl.write(link + ',\n')
 					self.links_available.append(hashlib.sha1(bytes(link, 'utf-8')).hexdigest())
-				else:
-					print(">>> Nao aceito")
 			self.links.clear()
 			fl.close()
 		yield scrapy.Request(
@@ -55,3 +59,4 @@ class CruzeiroLinksSpider(scrapy.Spider):
 #response.xpath('//p[contains(@class, "content-publication-data__from")]/@title').extract()   Autor
 
 #response.xpath('//p[contains(@class, "content-text__container")]/text()').extract() Texto
+
