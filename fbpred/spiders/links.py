@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import hashlib
-import scrapy
-import hashlib
+
 
 class Links(scrapy.Spider):
 	name = 'links'
@@ -39,8 +38,8 @@ class Links(scrapy.Spider):
 			fl = open(self.file, 'a+')
 			for link in self.links:
 				if (hashlib.sha1(bytes(link, 'utf-8')).hexdigest() not in self.links_available) and (self.base_link in link):
-					print(">>>",link, "\n>>>", self.base_link)
-					fl.write(link + ',\n')
+					# print(">>>",link, "\n>>>", self.base_link)
+					fl.write(link + ',')
 					self.links_available.append(hashlib.sha1(bytes(link, 'utf-8')).hexdigest())
 			self.links.clear()
 			fl.close()

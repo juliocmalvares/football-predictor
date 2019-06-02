@@ -10,9 +10,7 @@ class IO(object):
     def __init__(self):
         self.path = os.getcwd()
         self.broken = False
-        self.ejson = json.encoder
-        self.djson = json.decoder
-
+        
     def __reader_csv(self, path, data):
         pass
     def __writer_csv(self, path, data):
