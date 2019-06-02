@@ -6,7 +6,7 @@ import json
 import os
 import numpy as np
 
-class io(object):
+class IO(object):
     def __init__(self):
         self.path = os.getcwd()
         self.broken = False
