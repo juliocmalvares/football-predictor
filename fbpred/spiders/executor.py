@@ -9,4 +9,5 @@ def execute_news(file):
     os.system('scrapy runspider news.py -a path_file={}'.format(file))
 
 
-execute_news('cruzeiro_links.csv')
+# execute_links('cruzeiro')
+execute_news('links.csv')

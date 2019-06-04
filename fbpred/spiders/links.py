@@ -9,7 +9,7 @@ class Links(scrapy.Spider):
 	start_urls = ['https://globoesporte.globo.com/futebol/times/{}/index/feed/pagina-1.ghtml'.format(time)]
 	links = []
 	counter = 1
-	file = 'cruzeiro_links.csv'
+	file = 'links.csv'
 	links_available = []
 	first_time = True
 	base_link = 'https://globoesporte.globo.com/futebol/times/%s' % time
