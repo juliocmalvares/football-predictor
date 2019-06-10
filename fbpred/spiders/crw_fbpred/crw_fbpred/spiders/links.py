@@ -3,10 +3,11 @@ import scrapy
 import hashlib
 
 
-class Links(scrapy.Spider):
+class LinksSpider(scrapy.Spider):
 	name = 'links'
-	time = '' # -a time='time' para passar o parâmetro
-	start_urls = ['https://globoesporte.globo.com/futebol/times/{}/index/feed/pagina-1.ghtml'.format(time)]
+	time = 'cruzeiro' # -a time='time'
+	start_urls = [
+		'https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-1.ghtml']
 	links = []
 	counter = 1
 	file = 'links.csv'
@@ -16,14 +17,13 @@ class Links(scrapy.Spider):
 
 	def populate(self):
 		try:
-			purelinks = open(self.file, 'r').read().split(',\n')
+			purelinks = open(self.file, 'r').read().split(',')
 		except:
 			return
 		for link in purelinks:
 			if link not in self.links_available:
 				self.links_available.append(hashlib.sha1(bytes(link, 'utf-8')).hexdigest())
-		
-#globoesporte.globo.com/futebol/times/time
+
 	def parse(self, response):
 
 		if self.first_time:
@@ -47,15 +47,3 @@ class Links(scrapy.Spider):
 			url='https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-%i.ghtml' % self.counter,
 			callback=self.parse
 		)
-
-
-#response.xpath('.//a[contains(@class, "header-editoria--link")]/text()').extract_first() Time
-#response.xpath('//div[contains(@class, "title")]/a/text()').extract_first() Time modo 2
-
-
-# response.xpath('//div[contains(@class, "title")]/meta/@content').extract() Titulo e subtitulo
-
-#response.xpath('//p[contains(@class, "content-publication-data__from")]/@title').extract()   Autor
-
-#response.xpath('//p[contains(@class, "content-text__container")]/text()').extract() Texto
-

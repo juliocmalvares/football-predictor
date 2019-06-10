@@ -5,7 +5,7 @@ import os
 
 if __name__ == '__main__':
 	setup(name = 'fbpred',
-		version = '0.01.0',
+		version = '0.1.0',
 		author = 'Júlio Álvares',
 		author_email = 'juliocmalvares07@gmail.com',
 		license ='MIT',

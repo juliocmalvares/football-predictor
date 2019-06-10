@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import csv
+import os
 import json
-class News(scrapy.Spider):
+
+class NewsSpider(scrapy.Spider):
     name = 'news'
     start_urls = ['https://globoesporte.globo.com/futebol/times/cruzeiro/ao-vivo/paginas-heroicas-e-imortais.ghtml']
     counter = 1
@@ -11,7 +12,9 @@ class News(scrapy.Spider):
     first_time = True
 
     def populate(self):
-        self.urls = open(self.path_file, 'r').read().split(',')
+        self.urls = open('links.csv', 'r').read().split(',')
+        os.system('mkdir -p Dados')
+        os.chdir("Dados")
         # with open(self.path_file, 'r') as fl:
         #     reader = csv.reader(fl, delimiter=',')
         #     for lin in reader:
@@ -28,11 +31,20 @@ class News(scrapy.Spider):
         author = response.xpath('//p[contains(@class, "content-publication-data__from")]/@title').extract()
         text = response.xpath('//p[contains(@class, "content-text__container")]/text()').extract()
         
-        data = {'time':time, 'title':title, 'author':author, 'text':text}
+        # data = {'time':time, 'title':title, 'author':author, 'text':text}
         
-        with open(str(self.counter)+'.json', 'w') as jsf:
-            json.dump(data, jsf)
-            self.counter+=1
+        yield{
+            'time': time,
+            'title': title,
+            'author': author,
+            'text': text,
+            'counter': self.counter
+        }
+        self.counter += 1
+        # with open(str(self.counter)+'.json', 'w') as jsf:
+        #     json.dump(data, jsf)
+        #     self.counter+=1
+
         yield scrapy.Request(
             url=str(self.urls.pop(0)),
             callback=self.parse

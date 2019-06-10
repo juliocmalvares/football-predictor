@@ -13,12 +13,17 @@ class IO(object):
         
     def __reader_csv(self, path, data):
         pass
+        
     def __writer_csv(self, path, data):
         pass
+
     def __reader_json(self, path, data):
-        pass
-    def __writer_csv(self, path, data):
-        pass
+        data = json.load(path)
+        return data
+
+    def __writer_json(self, path, data):
+        with open(path, 'w') as f:
+            json.dump(data ,f)
     
     def database_from_csv(self, path):
         pass
