@@ -38,7 +38,6 @@ class Gen(object):
             data = aux
 
             link = 'https://veja.abril.com.br/placar/campeonato-brasileiro/{}-e-{}-{}/'.format(mandante, visitante, data)
-            self.links.append(link)
             req = requests.get(link)
             if(req.status_code == 200):
                 print(">>> Request status:", req.status_code)

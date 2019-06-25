@@ -38,7 +38,7 @@ class NewsSpider(scrapy.Spider):
             'title': title,
             'author': author,
             'text': text,
-            'counter': self.counter
+            'id': self.counter
         }
         self.counter += 1
         # with open(str(self.counter)+'.json', 'w') as jsf:

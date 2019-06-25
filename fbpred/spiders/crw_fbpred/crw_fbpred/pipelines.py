@@ -20,7 +20,7 @@ class CrwFbpredPipeline(object):
         item['text'] = self.stringer(item['text'])
         # spider.log('--- Capturado ---')
 
-        with open(str(item['counter'])+'.json', 'w') as jsf:
+        with open(str(item['time'] + '_' + item['id'])+'.json', 'w') as jsf:
             json.dump(item, jsf)
 
         # return item
