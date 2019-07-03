@@ -30,6 +30,7 @@ class NewsSpider(scrapy.Spider):
         title = response.xpath('//div[contains(@class, "title")]/meta/@content').extract()
         author = response.xpath('//p[contains(@class, "content-publication-data__from")]/@title').extract()
         text = response.xpath('//p[contains(@class, "content-text__container")]/text()').extract()
+        date = response.xpath('.//time[contains(@itemprop, "datePublished")]/text()').extract_first()
         
         # data = {'time':time, 'title':title, 'author':author, 'text':text}
         
@@ -38,6 +39,7 @@ class NewsSpider(scrapy.Spider):
             'title': title,
             'author': author,
             'text': text,
+            'date': date,
             'id': self.counter
         }
         self.counter += 1

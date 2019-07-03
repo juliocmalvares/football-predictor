@@ -1,0 +1,21 @@
+'time"
+{
+    statisticas{
+        'todos os jogos em lista' chave data
+    },
+    news{
+        new{
+            data
+            texto
+            autor
+            ..
+
+        },
+        new{
+
+        }
+        .
+        .
+        .
+    }
+}
