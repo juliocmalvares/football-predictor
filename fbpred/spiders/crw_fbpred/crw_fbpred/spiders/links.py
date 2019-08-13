@@ -5,12 +5,12 @@ import hashlib
 
 class LinksSpider(scrapy.Spider):
 	name = 'links'
-	time = 'cruzeiro' # -a time='time'
+	time = 'flamengo' # -a time='time'
 	start_urls = [
-		'https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-1.ghtml']
+		'https://globoesporte.globo.com/futebol/times/flamengo/index/feed/pagina-250.ghtml']
 	links = []
-	counter = 1
-	file = 'links.csv'
+	counter = 250
+	file = 'links_{}.csv'.format(time)
 	links_available = []
 	first_time = True
 	base_link = 'https://globoesporte.globo.com/futebol/times/%s' % time
@@ -44,6 +44,6 @@ class LinksSpider(scrapy.Spider):
 			self.links.clear()
 			fl.close()
 		yield scrapy.Request(
-			url='https://globoesporte.globo.com/futebol/times/cruzeiro/index/feed/pagina-%i.ghtml' % self.counter,
+			url='https://globoesporte.globo.com/futebol/times/flamengo/index/feed/pagina-%i.ghtml' % self.counter,
 			callback=self.parse
 		)
