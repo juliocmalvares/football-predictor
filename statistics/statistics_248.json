@@ -1,16 +1,16 @@
 {
     "id": 248,
-    "team_id": 20,
+    "team_id": 15,
     "match_id": 124,
     "status": "h",
-    "shots": 19,
-    "shots_on_goal": 10,
-    "fouls": 10,
-    "offsides": 5,
-    "ball_possession": 56,
-    "corners": 8,
-    "cross": 7,
-    "yellow_cards": 0,
+    "shots": 10,
+    "shots_on_goal": 2,
+    "fouls": 14,
+    "offsides": 1,
+    "ball_possession": 55,
+    "corners": 3,
+    "cross": 17,
+    "yellow_cards": 3,
     "red_cards": 0,
-    "goals": 5
+    "goals": 1
 }

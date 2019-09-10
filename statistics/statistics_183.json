@@ -1,16 +1,16 @@
 {
     "id": 183,
-    "team_id": 20,
+    "team_id": 9,
     "match_id": 91,
     "status": "v",
-    "shots": 4,
+    "shots": 7,
     "shots_on_goal": 1,
-    "fouls": 20,
-    "offsides": 1,
-    "ball_possession": 36,
-    "corners": 1,
-    "cross": 8,
-    "yellow_cards": 3,
+    "fouls": 15,
+    "offsides": 0,
+    "ball_possession": 56,
+    "corners": 2,
+    "cross": 10,
+    "yellow_cards": 2,
     "red_cards": 0,
-    "goals": "1"
+    "goals": "0"
 }

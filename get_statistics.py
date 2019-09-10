@@ -27,6 +27,7 @@ class GetStatistics(object):
             os.chdir('Statistics')
             for i in self.links:
                 try:
+                    print("Getting data from: ", i)
                     self.driver.get(i)
                     aux = self.driver.find_element_by_id('game-stats').text
                     self.cleaner(aux, i.split('/')[-2])

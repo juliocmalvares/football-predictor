@@ -1,16 +1,16 @@
 {
     "id": 165,
-    "team_id": 8,
+    "team_id": 14,
     "match_id": 82,
     "status": "v",
-    "shots": 12,
-    "shots_on_goal": 4,
-    "fouls": 16,
-    "offsides": 1,
-    "ball_possession": 55,
-    "corners": 1,
-    "cross": 5,
-    "yellow_cards": 2,
-    "red_cards": 1,
-    "goals": "0"
+    "shots": 8,
+    "shots_on_goal": 2,
+    "fouls": 17,
+    "offsides": 0,
+    "ball_possession": 61,
+    "corners": 2,
+    "cross": 1,
+    "yellow_cards": 3,
+    "red_cards": 0,
+    "goals": "1"
 }
