@@ -1,0 +1,12 @@
+>>> Connected to database
+> Founded  0  new tuples.
+>>> A Backup file as created. 942 samples.
+Score test SVM with crammer_singer:  0.5473684210526316
+Score test SVM with ovr:  0.5578947368421052
+Score test RandomForest:  0.6105263157894737
+Score test GaussianNB:  0.6
+Score test RandomForest:  0.5789473684210527
+Score ONRC SVM ovr: 0.5578947368421052
+[0 0 0 0 0 0 0 0 0 0 2 0 1 1 0 3 2 3 1 0 3 0 0 3 3 0 3 1 0 3 2 0 1 0 1 1 0
+ 0 0 3 2 2 2 3 0 0 0 0 1 3 2 3 1 3 0 0 0 3 1 3 2 1 2 0 1 0 0 1 0 0 0 1 0 0
+ 0 0 2 1 0 0 2 2 3 3 3 0 3 3 0 0 2 0 0 2 3]
