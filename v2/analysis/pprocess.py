@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import nltk
 from joblib import Parallel, delayed
 import time
 import pandas
-from tqdm import tqdm
 from sklearn.feature_extraction.text import TfidfVectorizer, TfidfTransformer
 
 class preprocessing(object):
