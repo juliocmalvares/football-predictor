@@ -1,5 +1,0 @@
-DEBUG:matplotlib:CACHEDIR=/home/juliocmalvares/.cache/matplotlib
-DEBUG:matplotlib.font_manager:Using fontManager instance from /home/juliocmalvares/.cache/matplotlib/fontlist-v310.json
-DEBUG:matplotlib.pyplot:Loaded backend qt5agg version unknown.
-DEBUG:matplotlib.pyplot:Loaded backend gtk3agg version unknown.
-DEBUG:matplotlib.pyplot:Loaded backend GTK3Agg version unknown.
