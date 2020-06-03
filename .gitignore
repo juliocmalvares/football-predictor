@@ -1,3 +1,4 @@
+*__pycache__
 matches/*
 news/*
 statistics/*
@@ -6,3 +7,12 @@ andamento.txt
 games.txt
 match_*
 statistics_*
+v2/links_2018
+v2/news
+v2/links
+v2/site
+v2/news.json
+v2/bd.json
+v2/analysis/out.txt
+*debug.log
+*.json
