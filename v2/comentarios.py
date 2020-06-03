@@ -68,9 +68,8 @@ def getComentarios(crawled_link):
     opt = Options()
     opt.add_argument("-window-size=1920,1080") #seting size of window
     # opt.add_argument("--headless") #tela minimizada
-    chrome = webdriver.Chrome(options=opt) 
     listenner = Listenner() #invoking my listenner
-    driver = EventFiringWebDriver(chrome, listenner) #joining the driver with the listenner
+    driver = EventFiringWebDriver(webdriver.Chrome(options=opt), listenner) #joining the driver with the listenner
 
     driver.get(link)
 
@@ -154,5 +153,5 @@ coments = {}
 for i in links:
     coments.update(getComentarios(i))
 with open("comentarios.json", "w") as jsf:
-            json.dump(coments, jsf, ensure_ascii=False, indent=4)
+    json.dump(coments, jsf, ensure_ascii=False, indent=4)
 # get(links)

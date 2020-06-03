@@ -23,6 +23,7 @@ import urllib3
 from lxml import html
 from joblib import Parallel, delayed
 from tqdm import tqdm
+from helpmessage import help_message
 
 
 ####################################
@@ -362,6 +363,7 @@ class Crawler:
         self.__populate_urlstovisit()
         news = []
         os.chdir("news")
+        #Fazer a verificação do paralelo
         Parallel(n_jobs=4, backend="threading")(
             delayed(self.__getnew)(elem) for elem in tqdm(self.urls_to_visit))
         os.chdir("..")
@@ -434,7 +436,7 @@ def get_args():
     """
     Get arguments
     """
-    parser = argparse.ArgumentParser("GloboEsporteWebCrawler")
+    parser = argparse.ArgumentParser("GloboEsporteWebCrawler", description="A news crawler and GloboEsporte website links", epilog=help_message, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("-a", "--download-all", action="store_true",
                         default=False, help="Download all news from all teams.")
     parser.add_argument("-n", "--download-news", action="store_true",
@@ -443,6 +445,7 @@ def get_args():
                         default=False, help="Set year of the competition.")
     parser.add_argument("data_init", nargs="?", const="str")
     parser.add_argument("data_end", nargs="?", const="str")
+    # parser.add_argument("-h", "--help", action='help', help = help_message)
     return parser.parse_args()
 
 
