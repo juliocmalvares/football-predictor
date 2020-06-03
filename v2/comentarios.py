@@ -12,6 +12,10 @@ import json
 procurar glbComentarios-lista-resposta e o atributo data-total-replaies
 //ul[contains(@class, "glbComentarios-lista-resposta-todos")]/li
 """
+
+def teste():
+    return
+    
 def clearComment(element):
     print(">>> id:", element.get_attribute("data-comentario-id"))
     aux = {}
