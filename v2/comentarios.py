@@ -5,6 +5,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from eventlistenner import Listenner
+from selenium.webdriver.support.events import EventFiringWebDriver
+from selenium.webdriver.support import expected_conditions
+
+
 import os
 import csv
 import json
@@ -49,87 +55,62 @@ def clearComment(driver, element):
     n_replies = int(element.get_attribute("data-comentario-qtd_replies"))
     aux['n_replies'] = n_replies
     if n_replies > 0:
-        # if n_replies > 2:
-        #     # scroller = element.find_elements_by_tag_name("button")[2]
-        #     # driver.execute_script("arguments[0].scrollIntoView();", scroller)
-        #     bt_mais = element.find_element_by_class_name("glbComentarios-lista-bt-paginar")
-        #     try:
-        #         bt_mais.click()
-        #     except:
-        #         print("Unclicable")
-        #         return aux
-
         replies = element.find_elements_by_tag_name("li")#find_elements_by_xpath("//div[contains(@class, 'glbComentarios-lista-resposta')]/li")
         for i in replies:
             aux['replies'].append(clearSubComment(i))
     else:
         return aux
 
-    # if n_replies > 0:
-    #     if n_replies > 2:
-    #         bt_mais = element.find_elements_by_tag_name("button")[3]
-    #         driver.execute_script("arguments[0].scrollIntoView();", bt_mais)
-    #         bt_mais.click()
-    #         print ("Position confirmed and clicked")
-    #     # driver.implicitly_wait(10)
-    #     replies = element.find_elements_by_tag_name("li")
-    #     for i in replies:
-    #         aux['replies'].append(clearSubComment(i))
-
-
-    # print(aux)
-    # print("\n")
     return aux
 
-def getComentarios(crawled_link, tryes=0):
+def getComentarios(crawled_link):
     link = crawled_link
-    ntryes = tryes
     opt = Options()
-    opt.add_argument("-window-size=1920,1080")
+    opt.add_argument("-window-size=1920,1080") #seting size of window
     # opt.add_argument("--headless") #tela minimizada
-    driver = webdriver.Chrome(options=opt)
+    chrome = webdriver.Chrome(options=opt) 
+    listenner = Listenner() #invoking my listenner
+    driver = EventFiringWebDriver(chrome, listenner) #joining the driver with the listenner
+
     driver.get(link)
-    driver.implicitly_wait(time_to_wait=10)
+
+    """
+        In the code snippet below, we use a DOM element as a "scapegoat" to position the screen in the place we would like,
+         due to the fact that the website's comments tab is only invoked when positioning the screen in place.
+    """
     element_aux = driver.find_elements_by_xpath("//div[contains(@class, 'entities')]")[0]
-    
     driver.execute_script("arguments[0].scrollIntoView();", element_aux)
     
+    """
+        In the excerpt below, we use WebDriverWait together with ExceptConditions to wait for the desired element to be visible in the DOM before just clicking!
+        The element is the "Load all comments" button
+    """
+    load_button = WebDriverWait(driver, 10).until(expected_conditions.visibility_of_element_located((By.XPATH, "//button[contains(@class, 'glbComentarios-botao-mais')]")))
+    load_button.click()
 
-    try:
-        button_carregar = driver.find_elements(by=By.XPATH, value="//button[contains(@class, 'glbComentarios-botao-mais')]")[0]
-        button_carregar.click()
-    except:
-        print("call again, try", ntryes)
-        if(ntryes > 3): 
-            return
-        driver.quit()
-        getComentarios(crawled_link, ntryes+1)
-
+    """
+        Here we invoke all the elements that contain comments and set the variables to receive them
+    """
     elements = driver.find_elements(by=By.XPATH, value = "//ul[contains(@class, 'glbComentarios-lista-todos')]/li")
-    # elements = driver.find_elements_by_tag_name("li")
-    # print(">>> ", len(elements), "items")
-    # elements = driver.find_elements_by_xpath(".//div[contains(@class, 'glbComentarios-conteudo')]")
-    # elements = driver.find_elements_by_class_name("glbComentarios-conteudo")
-    # print(len(elements))
-
-    # btn_mais = driver.find_elements_by_class_name("button.glbComentarios-lista-bt-paginar")
-    # print(len(btn_mais))
-    # for i in btn_mais:
-    #     i.click()
-    #     print("Clicked")
     comentarios = {}
     count = 0
 
+    """
+    The excerpt below is necessary because, when a comment has more than three replies, the site inserts a button to load all replies.
+    Thus, they are not visible in the DOM and the click is necessary.
+    We look for everyone, we clean the ones that are unnecessary for us (the invisible ones on the screen that are part of the 
+    favorite comments, we work in the tab of all comments) and we make the clicks.
+    """
     spam_buttons = driver.find_elements(by=By.XPATH, value = "//button[contains(@class, 'glbComentarios-lista-bt-paginar')]")
     spam_buttons = [p for p in spam_buttons if p.is_displayed()]
     
     for bt in spam_buttons:
         driver.execute_script("arguments[0].scrollIntoView();", bt)
-        try:
-            bt.click()
-        except:
-            print("Error")
+        bt.click()
 
+    """
+    Then, we just invoke the clearComment function for all elements finded.
+    """
     for li in elements:
         coment = clearComment(driver, li)
         if coment != {}:
@@ -171,7 +152,7 @@ links = [
 ]
 coments = {}
 for i in links:
-    coments.update(getComentarios(i, 0))
+    coments.update(getComentarios(i))
 with open("comentarios.json", "w") as jsf:
             json.dump(coments, jsf, ensure_ascii=False, indent=4)
 # get(links)
