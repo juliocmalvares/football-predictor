@@ -8,6 +8,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 import os
 import csv
 import json
+from joblib import Parallel, delayed
+from tqdm import tqdm
 
 """
 procurar glbComentarios-lista-resposta e o atributo data-total-replaies
@@ -25,7 +27,7 @@ def clearSubComment(element):
     aux['date'] = element.find_element_by_tag_name("abbr").get_attribute("title")  #(by=By.XPATH, value="//abbr[contains(@itemprop, 'commentTime')]").get_attribute("title")
     aux['likes'] = element.find_elements_by_tag_name("button")[1].text  #(by=By.XPATH, value="//button[contains(@class, 'voted')]")[0].text
     aux['unlikes'] = element.find_elements_by_tag_name("button")[2].text #find_elements(by=By.XPATH, value="//button[contains(@class, 'voted')]")[1].text
-    print(aux, '\n')
+    # print(aux, '\n')
     return aux
 
 def clearComment(driver, element):
@@ -79,30 +81,33 @@ def clearComment(driver, element):
     # print("\n")
     return aux
 
-def getComentarios():
-    link = "https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/marques-comenta-sobre-rever-e-guga-e-ve-situacoes-bem-encaminhadas-no-atletico-mg.ghtml"
-
+def getComentarios(crawled_link, tryes=0):
+    link = crawled_link
+    ntryes = tryes
     opt = Options()
     opt.add_argument("-window-size=1920,1080")
     # opt.add_argument("--headless") #tela minimizada
     driver = webdriver.Chrome(options=opt)
     driver.get(link)
     driver.implicitly_wait(time_to_wait=10)
-    element_aux = driver.find_elements_by_xpath("//a[contains(@class, 'entities__list-itemLink')]")[0]
+    element_aux = driver.find_elements_by_xpath("//div[contains(@class, 'entities')]")[0]
     
     driver.execute_script("arguments[0].scrollIntoView();", element_aux)
-    button_carregar = driver.find_elements(by=By.XPATH, value="//button[contains(@class, 'glbComentarios-botao-mais')]")[0]
+    
 
     try:
+        button_carregar = driver.find_elements(by=By.XPATH, value="//button[contains(@class, 'glbComentarios-botao-mais')]")[0]
         button_carregar.click()
     except:
-        print("call again")
-        driver.close()
-        getComentarios()
+        print("call again, try", ntryes)
+        if(ntryes > 3): 
+            return
+        driver.quit()
+        getComentarios(crawled_link, ntryes+1)
 
     elements = driver.find_elements(by=By.XPATH, value = "//ul[contains(@class, 'glbComentarios-lista-todos')]/li")
     # elements = driver.find_elements_by_tag_name("li")
-    print(">>> ", len(elements), "items")
+    # print(">>> ", len(elements), "items")
     # elements = driver.find_elements_by_xpath(".//div[contains(@class, 'glbComentarios-conteudo')]")
     # elements = driver.find_elements_by_class_name("glbComentarios-conteudo")
     # print(len(elements))
@@ -115,36 +120,58 @@ def getComentarios():
     comentarios = {}
     count = 0
 
-
-
-
     spam_buttons = driver.find_elements(by=By.XPATH, value = "//button[contains(@class, 'glbComentarios-lista-bt-paginar')]")
-    print("Tamanho antes",len(spam_buttons))
     spam_buttons = [p for p in spam_buttons if p.is_displayed()]
-    print("Tamanho dps",len(spam_buttons))
-    print(">>> buttons pag: ", len(spam_buttons))
+    
     for bt in spam_buttons:
         driver.execute_script("arguments[0].scrollIntoView();", bt)
         try:
             bt.click()
-            print("Clicked")
         except:
             print("Error")
-
-
-
-
-
 
     for li in elements:
         coment = clearComment(driver, li)
         if coment != {}:
             comentarios[count] = coment
             count += 1
+    
+    driver.quit()
+    return comentarios
+
+def get(links):
+    links = links
+
+    coments = dict(Parallel(n_jobs=4, backend='threading')(
+        delayed(getComentarios)(link) for link in tqdm(links)))
     with open("comentarios.json", "w") as jsf:
-            json.dump(comentarios, jsf, ensure_ascii=False, indent=4)
+            json.dump(coments, jsf, ensure_ascii=False, indent=4)
 
-    driver.close()
-
-
-getComentarios()
+links = [
+    "https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/marques-comenta-sobre-rever-e-guga-e-ve-situacoes-bem-encaminhadas-no-atletico-mg.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/atletico-mg-ostenta-otimos-numeros-na-libertadores-nesta-decada-e-compoe-top-3-no-brasil.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/sombra-para-ricardo-oliveira-atacante-do-cerro-porteno-entra-na-mira-do-atletico-mg.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/atletico-mg-repete-formula-na-contratacao-de-guga-e-prepara-terreno-para-negociar-emerson.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/blanco-evita-dar-prazo-para-voltar-ao-atletico-mg-mas-projeta-2019-sem-lesoes-e-pensa-em-jogar-com-elias.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/leo-silva-vai-estender-contrato-ate-junho-sequencia-fora-de-campo-esta-engatilhada-no-atletico-mg.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/presidente-ve-elenco-do-atletico-mg-na-conta-do-cha-e-esconde-estrategia-para-atrair-investidores.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/convocado-para-o-sul-americano-sub-20-emerson-perdera-pre-temporada-e-inicio-do-mineiro.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/barcelona-e-betis-conversam-por-transferencia-emerson-do-atletico-mg-diz-radio-espanhola.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/com-56-jogos-luan-tem-segundo-ano-mais-atuante-pelo-atletico-mg-mas-fica-sem-titulo-pela-1a-vez.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/presidente-do-atletico-mg-esclarece-declaracao-sobre-a-sul-americana-e-comenta-sobre-processos-a-torcedores-do-galo.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/barca-do-atletico-mg-apostas-da-era-gallo-lideram-lista-de-dispensa-denilson-e-o-mais-votado.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/sette-camara-avalia-primeiro-ano-no-atletico-mg-mais-dificil-do-que-imaginava-e-faz-balanco-positivo.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/com-moral-marques-tem-missao-de-findar-sina-na-direcao-de-futebol-do-atletico-mg-pos-maluf.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/atletico-mg-ja-conhece-possiveis-rivais-na-segunda-fase-da-libertadores-restam-duas-vagas.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/apos-tentar-contratar-diretor-de-futebol-presidente-do-atletico-mg-confirma-sequencia-de-marques.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/ricardo-oliveira-alcanca-feito-pelo-atletico-mg-faz-autocritica-e-fala-sobre-competitividade-aos-38-anos.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/danilo-analisa-ano-na-ponte-mira-nova-chance-no-atletico-mg-mas-aguarda-definicao-de-futuro.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/no-radar-do-atletico-mg-para-2019-zagueiro-maicon-pode-trocar-a-turquia-pelo-futebol-arabe.ghtml",
+"https://globoesporte.globo.com/futebol/times/atletico-mg/noticia/atletico-mg-busca-parcerias-para-futuro-estadio-grana-do-shopping-se-aproxima-de-r-300-milhoes.ghtml"
+]
+coments = {}
+for i in links:
+    coments.update(getComentarios(i, 0))
+with open("comentarios.json", "w") as jsf:
+            json.dump(coments, jsf, ensure_ascii=False, indent=4)
+# get(links)
