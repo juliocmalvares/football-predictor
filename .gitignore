@@ -16,3 +16,4 @@ v2/bd.json
 v2/analysis/out.txt
 *debug.log
 *.json
+v2/tensor_test.py

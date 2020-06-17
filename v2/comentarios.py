@@ -58,8 +58,6 @@ def clearComment(driver, element):
         replies = element.find_elements_by_tag_name("li")#find_elements_by_xpath("//div[contains(@class, 'glbComentarios-lista-resposta')]/li")
         for i in replies:
             aux['replies'].append(clearSubComment(i))
-    else:
-        return aux
 
     return aux
 

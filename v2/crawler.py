@@ -62,6 +62,20 @@ class Crawler:
         dataLimit_init = data limite da ultima publicação a ser baixada
         backend = em que plataforma o crawler vai fazer request (urllib ou selenium)
         '''
+
+        """
+        Vefiricando conexão com a internet
+        """
+        tester_conection = urllib3.PoolManager()
+        try:
+            request = tester_conection.request(url="https://www.google.com.br", method="GET")
+            if request.status == 200:
+                print("\033[1;36m Stable conection. ")
+        except urllib3.exceptions.MaxRetryError:
+            print("\033[1;31m No has internet connection.")
+            return
+
+
         if not self.exists_path("links"):
             os.mkdir('links')
         self.crawled_team = team
