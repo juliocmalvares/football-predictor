@@ -27,7 +27,7 @@ from helpmessage import help_message
 
 
 ####################################
-teams = {
+TEAMS = {
     1: "sao-paulo",
     2: "vasco",
     3: "atletico-mg",
@@ -67,12 +67,13 @@ class Crawler:
         Vefiricando conexão com a internet
         """
         tester_conection = urllib3.PoolManager()
+        print(":>> Verifying connection:", end='')
         try:
-            request = tester_conection.request(url="https://www.google.com.br", method="GET")
+            request = tester_conection.request(url="https://www.google.com", method="GET")
             if request.status == 200:
-                print("\033[1;36m Stable conection. ")
+                print("\033[1;36m Successful connection. ")
         except urllib3.exceptions.MaxRetryError:
-            print("\033[1;31m No has internet connection.")
+            print("\033[1;31m Unsuccessful connection.")
             return
 
 
@@ -440,8 +441,8 @@ class Crawler:
         if data_control == False:
             return
         else:
-            for i in self.teams.keys():
-                self.__init__(team=self.teams[i],
+            for i in TEAMS.keys():
+                self.__init__(team=TEAMS[i],
                               dataLimit_init=data_init, dataLimit_end=data_end, qtPublic=npublic)
                 self.get_links_with_urllib()
 
@@ -459,13 +460,13 @@ def get_args():
                         default=False, help="Set year of the competition.")
     parser.add_argument("data_init", nargs="?", const="str")
     parser.add_argument("data_end", nargs="?", const="str")
-    # parser.add_argument("-h", "--help", action='help', help = help_message)
+
     return parser.parse_args()
 
 
 def main():
     args = get_args()
-    crawler = Crawler(teams[1])
+    crawler = Crawler(TEAMS[1])
     # crawler.correction_json_news()
     # print(args.data_init, args.data_end)
     if args.download_all:
