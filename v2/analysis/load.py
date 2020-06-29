@@ -28,6 +28,24 @@ class DataLoader(object):
             print("Error on connect to database")
         self.collection = None
 
+    def download_all_data(self):
+        #implementar verificação
+        p = pathlib.Path("alldata.json")
+        data = {}
+        if p.exists():
+            print("Loading from JSON")
+            data = json.load(p.open())
+            return data
+        
+        self.collection = self.client['fbpred']['news']
+        cursor = self.collection.find()
+        for i in cursor:
+            i.pop("_id")
+            data[i['id']] = i
+        
+        self.__toJSON(data, pathname="alldata.json")
+        return data
+
     def download_data(self):
         p = pathlib.Path("backup_data.json")
         new_data = {}

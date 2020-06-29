@@ -17,3 +17,8 @@ v2/analysis/out.txt
 *debug.log
 *.json
 v2/tensor_test.py
+v2/bd
+
+v1/roteiro.txt
+
+v2/analysis/out_classification.txt
