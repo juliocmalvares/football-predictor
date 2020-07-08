@@ -17,6 +17,8 @@ import pandas as pd
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
+from sklearn.neural_network import MLPClassifier
+
 
 data_train = load.DataLoader().download_data()
 data_full = load.DataLoader().download_all_data()
@@ -57,13 +59,15 @@ for i in tqdm(range(len(fdados))):
 
 print("Maior size:", maior)
 print("Iniciando processo de treino")
-
 data_train, data_test, y_train, y_test = train_test_split(dados, labels, test_size=0.05)
 
+# fdados = [[enumerate(w), -1] for w in fdados]
 
 classifier = make_pipeline(StandardScaler(), SVC(kernel="rbf", max_iter=-1, C=0.1, random_state=42, break_ties=True), verbose=True)
+# classifier = make_pipeline(StandardScaler(), MLPClassifier(random_state=42, activation='relu', solver='adam', verbose=True), verbose=True)
 classifier.fit(data_train, y_train)
-classifier.decision_function(data_train)
+#classifier.decision_function(data_train)
+# print(classifier.get_params())
 
 print("Score test SVM with ovr: ", classifier.score(data_test, y_test))
 
@@ -72,43 +76,32 @@ print(fdados[:5])
 labels_final = []
 print("Iniciando processo de classificação")
 for i in tqdm(range(len(fdados))):
-    labels_final.append(classifier.predict([fdados[i]]))
+    labels_final.append(classifier.predict(fdados[i]))
+# fdados = [[w[1], classifier.predict(w[1])] for w in fdados]
 
-# print(labels_final[:100])
+print(fdados[:50])
 
 results = [int(w) for w in labels_final]
 
+print(results[:100])
 
-def make_axis(data):
-    x = []
-    y = []
-    for w in data:
-        x.append(w.min())
-        y.append(w.max())
-    return np.log(np.array(x)), np.log(np.array(y))
+#o erro ta em printar os itens 
 
-X, Y = make_axis(fdados)
+# def make_axis(data):
+#     x = []
+#     y = []
+#     for w in data:
+#         x.append(w.min())
+#         y.append(w.max())
+#     return np.log(np.array(x)), np.log(np.array(y))
 
-
-
-plt.scatter(X, Y, c=results, cmap=plt.cm.Paired, edgecolors='k')
-plt.axis('tight')
-plt.show()
+# X, Y = make_axis(fdados)
 
 
-from sklearn.manifold import TSNE
 
-tsne = TSNE(n_components=2, random_state=2, verbose=True)
-outputs = tsne.fit_transform(fdados)
-x_cords = outputs[:][0]
-y_cords = outputs[:][1]
-
-print(x_cords[:10], y_cords[:10])
-plt.scatter(x_cords, y_cords, c=results, cmap=plt.cm.Paired, edgecolors='k')
-plt.axis("tight")
-plt.show()
-
-
+# plt.scatter(X, Y, c=results, cmap=plt.cm.Paired, edgecolors='k')
+# plt.axis('tight')
+# plt.show()
 
 
 
