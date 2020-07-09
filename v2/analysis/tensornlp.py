@@ -20,39 +20,39 @@ tensors, labels = processor.spacy(data_train, "text")
 labels = np.array(labels)
 # print(data_train)
 sequences_for_train = [data_train[w]['text'] for w in data_train.keys()]
-sequences_for_train = processor.applystw(sequences_for_train)
-sequences_for_train = processor.applystem(sequences_for_train)
+# sequences_for_train = processor.applystw(sequences_for_train)
+# sequences_for_train = processor.applystem(sequences_for_train)
 
 
-encoder = tfd.features.text.SubwordTextEncoder.build_from_corpus(
-    sequences_for_train, target_vocab_size=2**15)
-print(encoder)
-print(encoder.encode(sequences_for_train[0]))
+# encoder = tfd.features.text.SubwordTextEncoder.build_from_corpus(
+#     sequences_for_train, target_vocab_size=2**15)
+# print(encoder)
+# print(encoder.encode(sequences_for_train[0]))
 
 
-training_size = int(len(sequences_for_train) * .8)
+training_size = int(len(sequences_for_train) * .75)
 training_sentences = sequences_for_train[0: training_size]
 test_sentences = sequences_for_train[training_size:]
 training_labels = labels[0:training_size]
 test_labels = labels[training_size:]
 
 
-training_sequences = [encoder.encode(w) for w in tqdm(training_sentences)]
+# training_sequences = [encoder.encode(w) for w in tqdm(training_sentences)]
 
-test_sequences = [encoder.encode(w) for w in tqdm(training_sentences)]
-# tokenizer = Tokenizer(oov_token='<OOV>')
-# tokenizer.fit_on_texts(training_sentences)
-# print(len(tokenizer.word_index))
+# test_sequences = [encoder.encode(w) for w in tqdm(training_sentences)]
+tokenizer = Tokenizer(oov_token='<OOV>')
+tokenizer.fit_on_texts(training_sentences)
+print(len(tokenizer.word_index))
 
-# training_sequences = tokenizer.texts_to_sequences(training_sentences)
+training_sequences = tokenizer.texts_to_sequences(training_sentences)
 training_padded = pad_sequences(training_sequences, maxlen=len(
     training_sequences[0]), truncating='post')
 
-# test_sequences = tokenizer.texts_to_sequences(test_sentences)
+test_sequences = tokenizer.texts_to_sequences(test_sentences)
 test_padded = pad_sequences(test_sequences, maxlen=len(
     training_sequences[0]), truncating='post')
 
-vocab_size = encoder.vocab_size
+vocab_size = len(tokenizer.word_index) + 1#encoder.vocab_size
 
 
 print(training_padded.shape)
@@ -66,7 +66,8 @@ model = tf.keras.Sequential([
     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(256)),
     # tf.keras.layers.Dense(units=64, activation='relu'),
     tf.keras.layers.Dense(units=256, activation='relu'),
-    tf.keras.layers.Dense(1)#4, activation='softmax')
+    # tf.keras.layers.Dense(units=4, activation='relu'),
+    tf.keras.layers.Dense(units=1)
 ])
 print(model.summary())
 model.compile(loss=tf.losses.BinaryCrossentropy(),
@@ -78,9 +79,9 @@ history = model.fit(training_padded, training_labels, epochs=num_epochs,
                     validation_data=(test_padded, test_labels), verbose=1)
 
 print(model.evaluate(training_padded, training_labels))
-# print(model.summary())
+print(model.summary())
 
-input()
+# input()
 history_dict = history.history
 acc = history_dict['accuracy']
 val_acc = history_dict['val_accuracy']
@@ -112,8 +113,8 @@ plt.legend()
 plt.show()
 sequences = [data_full[w]['text'] for w in data_full.keys()]
 print('Tamanho sequencias dados completos: ', len(sequences))
-sequences = processor.applystw(sequences)
-sequences = processor.applystem(sequences)
+# sequences = processor.applystw(sequences)
+# sequences = processor.applystem(sequences)
 
 sequences = tokenizer.texts_to_sequences(sequences)
 padded = pad_sequences(sequences, maxlen=len(
