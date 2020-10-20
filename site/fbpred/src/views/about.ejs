@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Avaliador de Notícias</title>
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
+        <a class="navbar-brand" href="#">Avalie</a>
+        <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <form action="/positiva/<%=show_new.id%>" method="POST">
+                        <button class="btn btn-info btn-lg nav-link nav-item text-monospace text-white"
+                            aria-details="Botão para precionar caso a notícia seja positiva"
+                            style="margin: 5px; padding: 5px;">Positiva</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="/negativa/<%=show_new.id%>" method="POST">
+                        <button class="btn btn-info btn-lg nav-link nav-item text-monospace text-white"
+                            aria-details="Botão para precionar caso a notícia seja negativa"
+                            style="margin: 5px; padding: 5px;">Negativa</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="/neutra/<%=show_new.id%>" method="POST">
+                        <button class="btn btn-info btn-lg nav-link nav-item text-monospace text-white"
+                            aria-details="Botão para precionar caso a notícia seja neutra"
+                            style="margin: 5px; padding: 5px;">Neutra</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="/nfutebol/<%=show_new.id%>" method="POST">
+                        <button class="btn btn-info btn-lg nav-link nav-item text-monospace text-white"
+                            aria-details="Botão para precionar caso a notícia não seja relacionada a futebol"
+                            style="margin: 5px; padding: 5px;">Não relacionada a
+                            Futebol</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row jumbotron">
+            <div class="col-md-6">
+                <p>Oi, eu sou o Goku</p>
+            </div>
+            <div class="col-md-6">
+                <div class="img-border">
+                    <img src="../../images/julio.jpeg" alt="Júlio" class="img-thumbnail rounded mx-auto">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</html>

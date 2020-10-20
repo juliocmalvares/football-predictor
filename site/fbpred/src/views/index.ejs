@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Avaliador de Notícias</title>
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
+        <!-- <a class="navbar-brand" href="#">Avalie</a> -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação" style="padding: 10px 12px; font-size: 25px;">
+            <!-- <span class="navbar-toggler-icon"></span> -->
+            Avalie
+        </button>
+       
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <form action="/positiva/<%=show_new.id%>" method="POST">
+                        <button class="btn btn-info btn-lg nav-link nav-item text-monospace text-white" aria-details="Botão para precionar caso a notícia seja positiva" style="margin: 5px; padding: 5px;">Positiva</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="/negativa/<%=show_new.id%>" method="POST">
+                        <button class="btn btn-info btn-lg nav-link nav-item text-monospace text-white" aria-details="Botão para precionar caso a notícia seja negativa" style="margin: 5px; padding: 5px;">Negativa</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="/neutra/<%=show_new.id%>" method="POST">
+                        <button class="btn btn-info btn-lg nav-link nav-item text-monospace text-white" aria-details="Botão para precionar caso a notícia seja neutra" style="margin: 5px; padding: 5px;">Neutra</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="/nfutebol/<%=show_new.id%>" method="POST">
+                        <button class="btn btn-info btn-lg nav-link nav-item text-monospace text-white" aria-details="Botão para precionar caso a notícia não seja relacionada a futebol" style="margin: 5px; padding: 5px;">Não relacionada a
+                            Futebol</button>
+                    </form>
+                </li>
+            </ul>
+            
+        </div>
+        <form action="/" method="GET">
+            <button class="btn btn-outline-dark btn-lg nav-link nav-item text-monospace" style="margin: 5px; padding: 10px 12px; font-size: 15px;">Pular notícia</button>
+        </form>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-12 jumbotron jumbotron-fluid" >
+            <div class="mr-auto text-align-center container">
+                <h4 class="text-monospace" style="margin: 10px;"><%= show_new.title %></h4> <br>
+                <p class="text-monospace" style="margin: 10px;">Data: <%=show_new.date%></p>
+                <p class="text-monospace" style="margin: 10px;">Time: <%=show_new.time%></p>
+                <p class="text-monospace" style="margin: 10px;"><%= show_new.text %></p>
+                <p class="text-monospace" style="margin: 10px;">Para acessar a notícia na íntegra, <a target="_blank" href="<%= show_new.url %>">clique aqui!</a></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</html>
