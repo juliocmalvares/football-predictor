@@ -77,6 +77,7 @@ class NewsCrawler(object):
         return aux
 
     def __clearComment(self, element) -> dict:
+        
         aux = {}
         aux['name'] = element.find_element_by_tag_name("strong").text
         aux['text'] = element.find_element_by_tag_name('p').text
@@ -122,6 +123,7 @@ class NewsCrawler(object):
         while not self.page_has_loaded():
             pass
         try:
+            print("[LOG] Crawling data from new")
             info['time'] = str(self.driver.find_element(
                 by=By.XPATH, value=".//a[contains(@class, 'header-editoria--link')]").text).lower()
             try:
@@ -153,6 +155,7 @@ class NewsCrawler(object):
             elements = self.driver.find_elements(
                 by=By.XPATH, value="//ul[contains(@class, 'glbComentarios-lista-todos')]/li")
             info['comments'] = []
+            print("[LOG] Crawling data from comments")
             for li in elements:
                 comment = self.__clearComment(li)
                 if comment != {} and comment != None:
@@ -164,6 +167,7 @@ class NewsCrawler(object):
         info['url'] = link
 
         if info.get('time') != None:
+            print('[LOG] Building file {!r}'.format(info['time'] + '_' + str(self.counter) + '.json'))
             with open('./news/' + info['time'] + '_' + str(self.counter) + '.json', 'w') as jsf:
                 json.dump(info, jsf, indent=4, ensure_ascii=False)
                 self.counter += 1
@@ -194,4 +198,4 @@ class NewsCrawler(object):
 
 
 cr = NewsCrawler()
-cr.get_from_csv('../links_news_2018')
+cr.get_from_csv('full_links')
