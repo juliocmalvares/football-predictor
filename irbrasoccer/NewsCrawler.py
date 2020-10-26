@@ -23,6 +23,8 @@ class NewsCrawler(object):
         super(NewsCrawler, self).__init__()
         tester_conection = urllib3.PoolManager()
         print(":>> Verifying connection:", end='')
+        
+        #test your connection with the internet
         try:
             request = tester_conection.request(
                 url="https://www.google.com", method="GET")
@@ -33,11 +35,18 @@ class NewsCrawler(object):
             del tester_conection
             return
         del tester_conection
+
         self.team = team
         opt = Options()
         opt.add_argument('--start-maximized')
+        """
+            By default, we start the page maximized.
+            This feature prevent some bugs on the process of build data from comments.
+        """
         self.driver: EventFiringWebDriver = EventFiringWebDriver(
             webdriver.Chrome(options=opt), Listenner(verbose=True))
+            #we can add more features on the listenner, future jobs
+            
         self.links = links
         self.date = date
         self.counter = 0
@@ -63,10 +72,28 @@ class NewsCrawler(object):
         return list(data)
 
     def page_has_loaded(self) -> bool:
+        """
+            This function verify the state of one page.
+            It was made to avoid errors of bad loading of the pages
+
+        Returns:
+            bool: 
+                true -> Loaded
+                false -> unloaded
+        """
         page_state = self.driver.execute_script('return document.readyState;')
         return page_state == 'complete'
 
     def __clearSubComment(self, element) -> dict:
+        """
+            This function extract the info's of subcomments of a comment.
+
+        Args:
+            element (webdriver.Element):
+
+        Returns:
+            dict: comment
+        """
         aux = {}
         aux['name'] = element.find_element_by_tag_name("strong").text
         aux['text'] = element.find_element_by_tag_name("p").text
@@ -77,7 +104,15 @@ class NewsCrawler(object):
         return aux
 
     def __clearComment(self, element) -> dict:
-        
+        """
+            This function extract all the comments of one new
+
+        Args:
+            element (webdriver.Element):
+
+        Returns:
+            dict: comments
+        """
         aux = {}
         aux['name'] = element.find_element_by_tag_name("strong").text
         aux['text'] = element.find_element_by_tag_name('p').text
@@ -101,6 +136,12 @@ class NewsCrawler(object):
         return aux
 
     def __exec_load_button(self):
+        """
+            This function is responsible for click in all the buttons for expanse the comments
+        """
+
+
+
         script = """
         bt = document.querySelectorAll('.glbComentarios-botao-mais');
         bt.forEach(b => {
@@ -113,7 +154,15 @@ class NewsCrawler(object):
         """
         self.driver.execute_script(script)
 
-    def build_page(self, link) -> bool:
+    def build_page(self, link: str) -> bool:
+        """this function is responsible for build the data from one page.
+
+        Args:
+            link ([str]): [url from the page]
+
+        Returns:
+            bool: [True-> success; False -> fail]
+        """
         try:
             self.driver.get(link)
         except:
@@ -127,7 +176,6 @@ class NewsCrawler(object):
             info['time'] = str(self.driver.find_element(
                 by=By.XPATH, value=".//a[contains(@class, 'header-editoria--link')]").text).lower()
             try:
-
                 info['date'] = str(self.driver.find_element(
                     by=By.XPATH, value=".//time[contains(@itemprop, 'datePublished')]").text)
             except:
@@ -142,9 +190,6 @@ class NewsCrawler(object):
                 by=By.XPATH, value="//div[contains(@class, 'entities')]")
             self.driver.execute_script(
                 "arguments[0].scrollIntoView();", element_aux)
-            # time.sleep(3)
-
-            # load_button = self.driver.find_element(by=By.XPATH, value = "//button[contains(@class, 'glbComentarios-botao-mais')]")
             load_button = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'glbComentarios-botao-mais')]")))
             self.driver.execute_script(
@@ -167,16 +212,23 @@ class NewsCrawler(object):
         info['url'] = link
 
         if info.get('time') != None:
-            print('[LOG] Building file {!r}'.format(info['time'] + '_' + str(self.counter) + '.json'))
+            print('[LOG] Building file {!r}'.format(
+                info['time'] + '_' + str(self.counter) + '.json'))
             with open('./news/' + info['time'] + '_' + str(self.counter) + '.json', 'w') as jsf:
                 json.dump(info, jsf, indent=4, ensure_ascii=False)
                 self.counter += 1
-            print("Crawled {} news from {}.".format(self.counter, info['time']))
+            print("Crawled {} news from {}.".format(
+                self.counter, info['time']))
             return True
         else:
             return False
 
     def get_from_csv(self, pathname) -> None:
+        """This function is responsible for checking all files that have already been downloaded and remove of the list of links
+
+        Args:
+            pathname ([type]): [path of the files]
+        """
         links = {}
         for team in self.__get_links(pathname):
             for i in team:

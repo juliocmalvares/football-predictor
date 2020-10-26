@@ -68,14 +68,17 @@ def dot_spliter_run() -> list:
 	else:
 		p = list(pathlib.Path(sys.path[0] + '/news').glob('*.json'))
 	data = []
+	print("[LOG] Reading JSON files")
 	for i in p:
 		aux = json.load(i.open())
 		if aux.get('text') != None and aux['exception'] == 0:
 			data.append(aux)
 	dot_spliter_runner(data)
+	print("[LOG] Cleaning empty phrases")
 	for i in data:
 		if i.get('phrases') != None and i.get('comments_phrases') != None:
 			i['phrases'] = [k for k in i['phrases'] if k != '']
 			i['comments_phrases']= [k for k in i['comments_phrases'] if k != '']
+	print("[LOG] Process successfully build")
 	return data
 
